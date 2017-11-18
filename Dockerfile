@@ -25,9 +25,10 @@ RUN mkdir ~/temp &&\
 # Clone the lede-project git in order to begin coding
 RUN git clone https://github.com/lede-project/source.git lede 
 
-# The next commands are done inside the lede directory as root
+# The next commands are done inside the lede directory as the omega user so that the install can run without root
+RUN adduser omega &&  echo 'omega:omega' | chpasswd   && chown -R omega:omega lede
 WORKDIR lede
-USER root
+USER omega
 
 # Install all the packages for the Omega2
 RUN ./scripts/feeds update -a && ./scripts/feeds install -a
@@ -44,6 +45,7 @@ RUN make -j1 V=s
 # Set the environment paths to make life easier
 ENV PATH "$PATH:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.15/bin:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.15/bin"
 
-# Create a working directory
+# Create a working directory and set user to root
+USER root
 RUN mkdir WorkingDirectory
 WORKDIR WorkingDirectory
