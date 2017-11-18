@@ -40,7 +40,7 @@ RUN echo "CONFIG_TARGET_ramips=y" > .config  && \
     make defconfig
 
 # Compile the cross-compiler with debugging enabled
-RUN make -j1 V=s
+RUN make
 
 # Set the environment paths to make life easier
 ENV PATH "$PATH:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.15/bin:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.15/bin"
