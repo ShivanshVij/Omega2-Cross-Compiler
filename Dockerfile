@@ -8,7 +8,7 @@ LABEL description="Dockerfile to install a prebuilt environment for Omega2 and O
 
 # Install prerequisites
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  subversion g++ zlib1g-dev build-essential git python libncurses5-dev gawk gettext unzip file libssl-dev wget nano automake autoconf gcc\
+  subversion g++ zlib1g-dev build-essential git python libncurses5-dev gawk gettext unzip file libssl-dev wget nano automake autoconf gcc curl libtool\
   && rm -rf /var/lib/apt/lists/*
 
 # Install CMake to build the Cross-Compiler
@@ -37,15 +37,19 @@ RUN ./scripts/feeds update -a && ./scripts/feeds install -a
 RUN echo "CONFIG_TARGET_ramips=y" > .config  && \
     echo "CONFIG_TARGET_ramips_mt7688=y" >> .config  && \
     echo "CONFIG_TARGET_ramips_mt7688_DEVICE_omega2=y" >> .config && \
+    echo "CONFIG_PACKAGE_libugpio=y" >> .config && \
     make defconfig
 
 # Compile the cross-compiler with debugging enabled
-RUN make
+RUN make -j1 -d V=s
 
 # Set the environment paths to make life easier
-ENV PATH "$PATH:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.15/bin:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.4.0_musl-1.1.15/bin"
+ENV PATH "$PATH:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.5.0_musl/bin:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.5.0_musl/bin"
+RUN export STAGING_DIR="/lede/staging_dir/"
 
 # Create a working directory and set user to root
 USER root
 RUN mkdir WorkingDirectory
 WORKDIR WorkingDirectory
+ENV PATH "$PATH:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.5.0_musl/bin:/lede/staging_dir/toolchain-mipsel_24kc_gcc-5.5.0_musl/bin"
+RUN export STAGING_DIR="/lede/staging_dir/"
