@@ -7,6 +7,8 @@ A docker file for an Omega2 Cross Compiler for C/C++ - added functionality for e
 Open Docker Terminal:
 
     docker pull finitespiral/omega2-cross-compiler
+    
+Requires additional changes to the lede system to reduce compiler size and add support for external resources
 
 # Usage:
 Compile command for GPIO.cpp:
